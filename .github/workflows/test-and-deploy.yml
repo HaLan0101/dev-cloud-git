@@ -23,13 +23,11 @@ jobs:
     - name: Run tests
       run: npm test
 
-    - name: Set Git user info
-      run: |
-        git config --global user.name "HaLan0101"
-        git config --global user.email "dnhalan0101@gmail.com"
+    - name: Build
+      run: npm run build
 
     - name: Deploy to GitHub Pages
-      if: success()
       run: |
-        npm run build
-        npx gh-pages -d build -b gh-pages -u "$GITHUB_ACTOR"
+        git config --global user.email "dnhalan0101@gmail.com"
+        git config --global user.name "HaLan0101"
+        npx gh-pages -d build -b gh-pages
