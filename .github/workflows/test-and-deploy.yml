@@ -28,6 +28,4 @@ jobs:
 
     - name: Deploy to GitHub Pages
       run: |
-        git config --global user.email "dnhalan0101@gmail.com"
-        git config --global user.name "HaLan0101"
-        npx gh-pages -d build -b gh-pages
+        npx gh-pages -d build -b gh-pages -u ${{ secrets.GH_PAGES_TOKEN }}
