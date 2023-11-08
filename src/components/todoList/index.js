@@ -45,7 +45,7 @@ const TodoList = () => {
         <TasksContext.Provider value={{ tasks, addTask, toggleTask, deleteTask }}>
             <div className="App">
                 {/* Champ d'entrée pour ajouter une nouvelle tâche */}
-                <input value={taskInput} onChange={e => setTaskInput(e.target.value)} />
+                <input data-testid='input-task' value={taskInput} onChange={e => setTaskInput(e.target.value)} />
                 <button onClick={handleAddTask}>Add</button>
                 {/* Sélecteur pour choisir le filtre d'affichage des tâches */}
                 <select value={filter} onChange={(e) => setFilter(e.target.value)}>
