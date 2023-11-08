@@ -25,9 +25,11 @@ jobs:
 
     - name: Set Git user info
       run: |
-        git config --global user.name "HaLan0101"
-        git config --global user.email "dnhalan0101@gmail.com"
-
+        git config --global user.name $GITHUB_ACTOR
+        git config --global user.email $GITHUB_EMAIL
+      env:
+        GITHUB_EMAIL: ${{ secrets.GITHUB_EMAIL }}
+        
     - name: Deploy to GitHub Pages
       if: success()
       run: |
