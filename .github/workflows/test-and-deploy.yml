@@ -1,35 +1,44 @@
-name: Test and Deploy
+# C'est le nom du workflow GitHub Actions.
+name: CI/CD Pipeline
 
+# Le mot-clé 'on' indique à GitHub quand exécuter ce workflow.
 on:
+  # Ce workflow sera déclenché lors des événements 'push' sur la branche 'main'.
   push:
-    branches:
-      - main
+    branches: [main]
+  # Ce workflow sera également déclenché lors des événements 'pull_request' ciblant la branche 'main'.
+  pull_request:
+    branches: [main]
 
+# 'jobs' définit ce que le workflow va réellement faire.
 jobs:
-  build:
+  # Ce travail est étiqueté 'build-and-test'.
+  build-and-test:
+    # 'runs-on' spécifie le type de machine pour exécuter le travail. Ici, il utilise la dernière version d'Ubuntu.
     runs-on: ubuntu-latest
-
+    # 'steps' sont les tâches séquentielles qui composent un travail.
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      # Cette étape utilise l'action GitHub 'actions/checkout' pour récupérer le code du dépôt.
+      - uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14 
-    - name: Install dependencies
-      run: npm install
+      # Cette étape s'appelle 'Install Dependencies' et elle exécute la commande pour installer les dépendances npm.
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
 
-    - name: Run tests
-      run: npm test
+      # Cette étape s'appelle 'Run Tests' et elle exécutera la suite de tests du projet.
+      - name: Run Tests
+        run: npm test
 
-    - name: Set Git user info
-      run: |
-        git config --global user.name "HaLan0101"
-        git config --global user.email "dnhalan0101@gmail.com"
+      # Cette étape s'appelle 'Build' et elle construira l'application React.
+      - name: Build
+        run: npm run build
 
-    - name: Deploy to GitHub Pages
-      if: success()
-      run: |
-        npm run build
-        npx gh-pages -d build -b gh-pages -u "$GITHUB_ACTOR"
+      # Cette étape ne s'exécutera que si toutes les étapes précédentes ont réussi grâce à la condition 'if: ${{ success() }}'.
+      # Elle utilise l'action 'JamesIves/github-pages-deploy-action' pour déployer l'application sur GitHub Pages.
+      - name: Deploy to GitHub Pages
+        if: ${{ success() }}
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages # Spécifie la branche sur laquelle le site construit sera déployé.
+          folder: build # Le répertoire contenant les résultats de la construction à déployer.
+          token: ${{ secrets.GH_PAGES_TOKEN }} # Jeton d'authentification avec des permissions pour pousser au dépôt.
